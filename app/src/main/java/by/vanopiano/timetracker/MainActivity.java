@@ -1,7 +1,5 @@
 package by.vanopiano.timetracker;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -13,7 +11,7 @@ import android.widget.TextView;
 /**
  * Created by De_Vano on 30 dec, 2014
  */
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
     private TextView elapsedTime;
     private Button outBtn, inBtn, stopBtn;
     private Settings settings;
@@ -22,14 +20,18 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setActionBarIcon(R.drawable.ic_launcher);
         settings = new Settings(this);
+        updateTextViewHandler = new Handler();
+
         elapsedTime = (TextView) findViewById(R.id.elapsedTime);
         inBtn = (Button) findViewById(R.id.inBtn);
         outBtn = (Button) findViewById(R.id.outBtn);
         stopBtn = (Button) findViewById(R.id.stopBtn);
+    }
 
-        updateTextViewHandler = new Handler();
+    @Override protected int getLayoutResource() {
+        return R.layout.activity_main;
     }
 
 
@@ -133,9 +135,10 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_settings) {
-            openSettingsActivity();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                openSettingsActivity();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

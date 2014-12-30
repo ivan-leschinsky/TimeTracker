@@ -1,46 +1,54 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:padding="4dp"
+        >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/my_awesome_bar_dark"
+            android:textColor="@color/colorPrimaryDark"
             android:id="@+id/elapsedTime"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:textSize="35dp" />
         <Button
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:text="@string/btn_start"
             android:onClick="buttonsClick"
-            android:textColor="@color/my_awesome_bar_dark"
+            android:textColor="@color/colorPrimaryDark"
             android:id="@+id/inBtn" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:onClick="buttonsClick"
-            android:textColor="@color/my_awesome_bar_dark"
+            android:textColor="@color/colorPrimaryDark"
             android:text="@string/btn_pause"
             android:id="@+id/outBtn" />
-
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:onClick="buttonsClick"
-            android:textColor="@color/my_awesome_bar_dark"
+            android:textColor="@color/colorPrimaryDark"
             android:text="@string/btn_stop"
             android:id="@+id/stopBtn" />
 
     </LinearLayout>
 
-
-</LinearLayout>
+</RelativeLayout>

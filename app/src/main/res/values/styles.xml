@@ -1,9 +1,0 @@
-<resources>
-    <style name="AppTheme" parent="@android:style/Theme.Material.Light">
-        <item name="android:colorPrimary">@color/my_awesome_bar</item>
-        <item name="android:colorPrimaryDark">@color/my_awesome_bar_dark</item>
-        <item name="android:navigationBarColor">@color/my_awesome_bar_dark</item>
-
-        <item name="android:actionBarSize">80dip</item>
-    </style>
-</resources>
