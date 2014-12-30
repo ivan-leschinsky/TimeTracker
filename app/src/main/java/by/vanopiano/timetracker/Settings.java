@@ -13,7 +13,7 @@ import java.util.TimeZone;
 public class Settings {
     private SharedPreferences sp;
     private SimpleDateFormat sdf;
-    long startedMilliss, currentMillis, workedMillis = 0;
+    long startedMilliss, workedMillis = 0;
 
 
     public Settings(Context context) {
@@ -27,12 +27,7 @@ public class Settings {
     }
 
     public void load() {
-        currentMillis = System.currentTimeMillis();
-//
-//        if (isResuming()) {
-//            startedMilliss = sp.getLong("timeStarted",currentMillis);
-//        }
-        startedMilliss = sp.getLong("timeStarted",currentMillis);
+        startedMilliss = sp.getLong("timeStarted", 0);
         workedMillis = sp.getLong("workedMillis", 0);
     }
 
@@ -47,14 +42,14 @@ public class Settings {
     public void resume() {
         sp.edit().putBoolean("isStopped", false).apply();
 
-        startedMilliss = System.currentTimeMillis();
-        sp.edit().putLong("timeStarted", startedMilliss).apply();
+        setStartedTime(System.currentTimeMillis())
         sp.edit().putBoolean("isResuming", true).apply();
     }
 
     public void pause() {
         addTime(System.currentTimeMillis() - startedMilliss);
         sp.edit().putBoolean("isResuming", false).apply();
+        setStartedTime(0);
     }
 
     public void addTime(long millisAdd) {
@@ -64,9 +59,8 @@ public class Settings {
 
     public void stop() {
         pause();
-        workedMillis = 0;
-        sp.edit().putLong("timeStarted", 0).apply(); // TODO: Check it in the future.
-        sp.edit().putLong("workedMillis", workedMillis).apply();
+
+        sp.edit().putLong("workedMillis", 0).apply();
         sp.edit().putBoolean("isStopped", true).apply();
     }
 
@@ -77,10 +71,22 @@ public class Settings {
     public String getCurrentDiff() {
         if (isPaused())
             return sdf.format(new Date(workedMillis));
+
         long diff = (startedMilliss > 0) ? System.currentTimeMillis() - startedMilliss : 0;
-        String workedTime = sdf.format(new Date(workedMillis));
-        String diffTime = sdf.format(new Date(diff));
-        String allTime = sdf.format(new Date(workedMillis + diff));
-        return allTime;
+        return sdf.format(new Date(workedMillis + diff));
     }
+
+    private setStartedTime(long millis) {
+        startedMilliss = millis;
+        sp.edit().putLong("timeStarted", startedMilliss).apply();
+    }
+
+//        // Another way to format time
+//        String formatted = String.format("%02d:%02d:%02d",
+//                TimeUnit.MILLISECONDS.toHours(millis),
+//                TimeUnit.MILLISECONDS.toMinutes(millis) -
+//                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), // The change is in this line
+//                TimeUnit.MILLISECONDS.toSeconds(millis) -
+//                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+
 }
