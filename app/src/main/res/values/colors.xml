@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="my_awesome_bar">#ff0971b0</color>
-    <color name="my_awesome_bar_dark">#ff094e82</color>
+    <color name="my_awesome_bar">#4CAF50</color>
+    <color name="my_awesome_bar_dark">#388E3C</color>
 </resources>

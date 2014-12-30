@@ -2,27 +2,18 @@ package by.vanopiano.timetracker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Created by OnLiker developers (De_Vano) on 30 дек, 2014
+ * Created by De_Vano on 30 dec, 2014
  */
 public class Settings {
     private SharedPreferences sp;
-    private SimpleDateFormat sdf;
     long startedMilliss, workedMillis = 0;
 
 
     public Settings(Context context) {
-        String timeZoneId = "Minsk";
         sp = context.getSharedPreferences("BaseSettings", Context.MODE_MULTI_PROCESS);
-//        timeZoneId = Calendar.getInstance().getTimeZone().getID();   // "Europe/Minsk" - doesn't work with Simple Data Format
-        sdf = new SimpleDateFormat("HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone(timeZoneId));
-
         load();
     }
 
@@ -42,7 +33,7 @@ public class Settings {
     public void resume() {
         sp.edit().putBoolean("isStopped", false).apply();
 
-        setStartedTime(System.currentTimeMillis())
+        setStartedTime(System.currentTimeMillis());
         sp.edit().putBoolean("isResuming", true).apply();
     }
 
@@ -69,24 +60,22 @@ public class Settings {
     }
 
     public String getCurrentDiff() {
+        long diff;
         if (isPaused())
-            return sdf.format(new Date(workedMillis));
+            diff = workedMillis;
+        else
+            diff = (startedMilliss > 0) ? System.currentTimeMillis() - startedMilliss + workedMillis : workedMillis;
 
-        long diff = (startedMilliss > 0) ? System.currentTimeMillis() - startedMilliss : 0;
-        return sdf.format(new Date(workedMillis + diff));
+        return String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(diff),
+                TimeUnit.MILLISECONDS.toMinutes(diff) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(diff)),
+                TimeUnit.MILLISECONDS.toSeconds(diff) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff)));
     }
 
-    private setStartedTime(long millis) {
+    private void setStartedTime(long millis) {
         startedMilliss = millis;
         sp.edit().putLong("timeStarted", startedMilliss).apply();
     }
-
-//        // Another way to format time
-//        String formatted = String.format("%02d:%02d:%02d",
-//                TimeUnit.MILLISECONDS.toHours(millis),
-//                TimeUnit.MILLISECONDS.toMinutes(millis) -
-//                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), // The change is in this line
-//                TimeUnit.MILLISECONDS.toSeconds(millis) -
-//                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
-
 }

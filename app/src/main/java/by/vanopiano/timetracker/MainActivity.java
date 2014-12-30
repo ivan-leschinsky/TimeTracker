@@ -1,6 +1,7 @@
 package by.vanopiano.timetracker;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -9,11 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-
+/**
+ * Created by De_Vano on 30 dec, 2014
+ */
 public class MainActivity extends Activity {
-    TextView elapsedTime;
-    Button outBtn, inBtn, stopBtn;
-    Settings settings;
+    private TextView elapsedTime;
+    private Button outBtn, inBtn, stopBtn;
+    private Settings settings;
+    private Handler updateTextViewHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +66,6 @@ public class MainActivity extends Activity {
             inBtn.setEnabled(false);
             outBtn.setEnabled(true);
         } else {
-//            stopBtn.setEnabled(false);
             outBtn.setEnabled(false);
             inBtn.setEnabled(true);
         }
@@ -98,9 +101,9 @@ public class MainActivity extends Activity {
         LoadSettings();
     }
 
-
-    Handler updateTextViewHandler;
-
+    private void openSettingsActivity() {
+//        startActivity(new Intent(this, SettingsActivity.class));
+    }
 
     Runnable updateTimerRunnable = new Runnable() {
         @Override
@@ -122,24 +125,16 @@ public class MainActivity extends Activity {
         updateTextViewHandler.removeCallbacks(updateTimerRunnable);
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (item.getItemId() == R.id.action_settings) {
+            openSettingsActivity();
             return true;
         }
 
