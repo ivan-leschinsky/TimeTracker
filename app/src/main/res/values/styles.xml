@@ -1,0 +1,24 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light">
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!--<item name="android:windowActionBar">false</item>-->
+        <item name="android:textColor">#fff</item>
+        <item name="android:colorPrimary">@color/my_awesome_bar</item>
+        <item name="android:colorPrimaryDark">@color/my_awesome_bar_dark</item>
+        <item name="android:navigationBarColor">#ff195a99</item>
+
+        <!--<item name="android:actionBarStyle">@style/ActionBarStyleBig</item>-->
+        <item name="android:actionBarSize">80dip</item>
+    </style>
+
+    <style name="textDark">
+        <item name="android:textColor">#ff2e2e2e</item>
+    </style>
+
+    <!--<style name="ActionBarStyleBig" parent="Widget.">-->
+    <!--<item name="android:height">@dimen/action_bar_height</item>-->
+    <!--</style>-->
+
+</resources>

@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Пришел"
+            android:onClick="buttonsClick"
+            android:textColor="@color/my_awesome_bar_dark"
+            android:id="@+id/inBtn" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:onClick="buttonsClick"
+            android:textColor="@color/my_awesome_bar_dark"
+            android:text="Ушел"
+            android:id="@+id/outBtn" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20px"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="2 часа 5 минут"
+            android:textColor="@color/my_awesome_bar_dark"
+            android:id="@+id/elapsedTime"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:onClick="buttonsClick"
+            android:textColor="@color/my_awesome_bar_dark"
+            android:text="Залогал"
+            android:id="@+id/stopBtn" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools" android:id="@+id/container"-->
+    <!--android:layout_width="match_parent" android:layout_height="match_parent"-->
+    <!--tools:context=".MainActivity" tools:ignore="MergeRootFrame" >-->
+    <!--<android.support.v7.widget.Toolbar-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/my_awesome_toolbar"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:minHeight="?attr/actionBarSize"-->
+        <!--android:background="?attr/colorPrimary" />-->
+    <!--</FrameLayout>-->
