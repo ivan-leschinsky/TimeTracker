@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
  * Created by De_Vano on 30 dec, 2014
  */
 
-@Table(name = "Tasks")
 
+@Table(name = "Tasks")
 public class Task extends Model {
     @Column(name = "Name")
     public String name;

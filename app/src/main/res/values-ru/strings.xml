@@ -5,4 +5,11 @@
     <string name="btn_pause">Пауза</string>
     <string name="btn_start">Старт</string>
     <string name="btn_stop">Стоп</string>
+    <string name="task_view">Просмотр задачи</string>
+    <string name="create_new_task">Создать новое задание</string>
+    <string name="create">Создать</string>
+    <string name="cancel">Отмена</string>
+    <string name="description">Описание</string>
+    <string name="name">Имя</string>
+    <string name="should_fill_all_fields">Необходимо заполнить все поля</string>
 </resources>

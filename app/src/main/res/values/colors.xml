@@ -3,4 +3,10 @@
     <color name="colorPrimary">#4CAF50</color>
     <color name="colorPrimaryDark">#388E3C</color>
     <color name="colorPrimaryMoreDarker">#ff1f4b22</color>
+
+    <color name="primary">@color/colorPrimary</color>
+    <color name="primary_pressed">@color/colorPrimaryDark</color>
+    <color name="ripple">@color/colorPrimaryMoreDarker</color>
+    <color name="accent">#FF5722</color>
+    <color name="accent_pressed">#ffc64b1e</color>
 </resources>
