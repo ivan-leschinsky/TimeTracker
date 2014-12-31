@@ -4,12 +4,20 @@
     <string name="action_settings"> Настройки</string>
     <string name="btn_pause">Пауза</string>
     <string name="btn_start">Старт</string>
-    <string name="btn_stop">Стоп</string>
+    <string name="btn_stop">Остановить и сохранить</string>
     <string name="task_view">Просмотр задачи</string>
     <string name="create_new_task">Создать новое задание</string>
-    <string name="create">Создать</string>
     <string name="cancel">Отмена</string>
     <string name="description">Описание</string>
     <string name="name">Имя</string>
-    <string name="should_fill_all_fields">Необходимо заполнить все поля</string>
+    <string name="should_fill_name_field">Необходимо заполнить поле названия</string>
+    <string name="action_edit_task">Редактировать</string>
+    <string name="successfully_changed">Успешно изменено</string>
+    <string name="successfully_created">Успешно создано</string>
+    <string name="edit_task">Редактировать задание</string>
+    <string name="no">Нет</string>
+    <string name="yes">Да</string>
+    <string name="remove_task">Действительно удалить?</string>
+    <string name="save">Сохранить</string>
+    <string name="action_delete">Удалить</string>
 </resources>

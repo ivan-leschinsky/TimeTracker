@@ -10,17 +10,21 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
+import by.vanopiano.timetracker.models.Task;
+
 /**
  * Created by De_Vano on 31 dec, 2014
  */
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private final Context mContext;
-    private final String[] mDataset;
+    private List<Task> mTasks;
 
-    public RecyclerViewAdapter(Context context, String[] dataset) {
+    public RecyclerViewAdapter(Context context) {
         mContext = context;
-        mDataset = dataset;
+        mTasks = Task.getAll();
     }
 
     @Override
@@ -31,28 +35,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        String[] values = mDataset[position].split(",");
-        String countryName = values[0];
-        String url = "http://lorempixel.com/800/600/sports/" + String.valueOf(position);
-        viewHolder.mTextView.setText(countryName);
-        Picasso.with(viewHolder.mImageView.getContext())
-                .load(url)
-                .into(viewHolder.mImageView);
+        Task t = mTasks.get(position);
+        viewHolder.mTitle.setText(t.name);
+        viewHolder.mTime.setText(t.getCurrentDiff());
+    }
+
+    public void notifyTaskAdded(Task task) {
+        mTasks.add(task);
+        notifyItemInserted(mTasks.indexOf(task) + 1);
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mTasks.size();
+    }
+
+    public long getTaskId(int position) {
+        return mTasks.get(position).getId();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTextView;
-        public ImageView mImageView;
+        public TextView mTitle, mTime;
 
         public ViewHolder(View v) {
             super(v);
-            mTextView = (TextView) v.findViewById(R.id.text);
-            mImageView = (ImageView) v.findViewById(R.id.image);
+            mTitle = (TextView) v.findViewById(R.id.task_small_title);
+            mTime = (TextView) v.findViewById(R.id.task_small_time);
         }
     }
 }

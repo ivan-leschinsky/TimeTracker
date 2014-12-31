@@ -33,6 +33,8 @@ public class MainActivity extends BaseActivity {
 //    private Button outBtn, inBtn, stopBtn;
     private Settings settings;
     private Handler updateTextViewHandler;
+    private RecyclerViewAdapter adapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,26 +44,27 @@ public class MainActivity extends BaseActivity {
         updateTextViewHandler = new Handler();
 
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
 
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, getResources()
-                .getStringArray(R.array.countries));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+
+        adapter = new RecyclerViewAdapter(this);
+
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(MainActivity.this, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        String url = "http://lorempixel.com/800/600/sports/" + String.valueOf(position);
-                        DetailActivity.launch(MainActivity.this, view.findViewById(R.id.image), url);
+                        DetailActivity.launch(MainActivity.this, view.findViewById(R.id.task_small_title), adapter.getTaskId(position));
                     }
                 })
         );
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.attachToRecyclerView(recyclerView);
+//        fab.attachToRecyclerView(recyclerView);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,18 +96,21 @@ public class MainActivity extends BaseActivity {
         new MaterialDialog.Builder(MainActivity.this)
                 .title(R.string.create_new_task)
                 .customView(view, true)
-                .positiveText(R.string.create)
+                .positiveText(R.string.save)
                 .negativeText(R.string.cancel)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         String name = ((EditText) view.findViewById(R.id.tv_name)).getText().toString();
                         String desc = ((EditText) view.findViewById(R.id.tv_description)).getText().toString();
-                        if (!name.isEmpty() && !desc.isEmpty()) {
-                            new Task(name, desc).save();
+                        if (!name.isEmpty()) {
+                            Task t = new Task(name, desc);
+                            Toast.makeText(MainActivity.this,R.string.successfully_created,Toast.LENGTH_SHORT).show();
+                            t.save();
+                            adapter.notifyTaskAdded(t);
                             dialog.dismiss();
                         } else {
-                            Toast.makeText(MainActivity.this,R.string.should_fill_all_fields,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this,R.string.should_fill_name_field,Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -113,12 +119,13 @@ public class MainActivity extends BaseActivity {
                         dialog.dismiss();
                     }
                 })
+                .autoDismiss(false)
                 .show();
     }
+
     @Override protected int getLayoutResource() {
         return R.layout.activity_main;
     }
-
 
     public void buttonsClick(View btn) {
 //        switch (btn.getId()) {
@@ -137,7 +144,9 @@ public class MainActivity extends BaseActivity {
     public void onResume() {
         super.onResume();
         LoadSettings();
-//        startUpdatingView();
+//        updateDataOnList();
+
+//        startUpdatingViews();
     }
 
     public void onPause() {

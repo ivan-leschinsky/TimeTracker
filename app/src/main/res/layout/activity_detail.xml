@@ -9,29 +9,21 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:src="@drawable/ic_launcher"
-        android:transitionName="photo_hero"
-        android:layout_below="@id/toolbar"
-        android:scaleType="centerCrop"/>
-
     <TextView
-        android:id="@+id/text"
-        android:text="@string/action_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/image"/>
+        android:id="@+id/view_task_title"
+        android:layout_width="fill_parent"
+        android:gravity="center"
+        android:layout_height="90dp"
+        android:textSize="40dp"
+        android:layout_below="@+id/toolbar"/>
 
     <LinearLayout
+        android:layout_below="@+id/view_task_title"
         android:orientation="vertical"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:padding="4dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
         >
 
         <TextView
@@ -39,12 +31,12 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/elapsedTime"
+            android:id="@+id/view_task_elapsed_time"
             android:layout_gravity="center_horizontal"
             android:textSize="35dp" />
         <Button
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="60dp"
             android:text="@string/btn_start"
             android:onClick="buttonsClick"
             android:textColor="@color/colorPrimaryDark"
@@ -52,7 +44,7 @@
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="60dp"
             android:onClick="buttonsClick"
             android:textColor="@color/colorPrimaryDark"
             android:text="@string/btn_pause"
@@ -60,7 +52,7 @@
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="60dp"
             android:onClick="buttonsClick"
             android:textColor="@color/colorPrimaryDark"
             android:text="@string/btn_stop"
