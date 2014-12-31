@@ -2,45 +2,77 @@ package by.vanopiano.timetracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewCompat;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.squareup.picasso.Picasso;
 
 import by.vanopiano.timetracker.models.Task;
+import by.vanopiano.timetracker.models.Work;
 
 /**
- * Created by OnLiker developers (De_Vano) on 31 дек, 2014
+ * Created by De_Vano on 31 dec, 2014
  */
 public class DetailActivity extends BaseActivity {
 
     public static final String EXTRA_ID = "DetailActivity:id";
+    public static final String EXTRA_TASK_POSITION_TO_DELETE = "DetailActivity:task_position";
     private Task task;
     private TextView tvTitle, tvElapsedTime;
+    private Button outBtn, inBtn, stopBtn;
+    private Handler updateTextViewHandler;
+    private int taskPosition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        updateTextViewHandler = new Handler();
         tvTitle = (TextView) findViewById(R.id.view_task_title);
         tvElapsedTime = (TextView) findViewById(R.id.view_task_elapsed_time);
+
+        inBtn = (Button) findViewById(R.id.inBtn);
+        outBtn = (Button) findViewById(R.id.outBtn);
+        stopBtn = (Button) findViewById(R.id.stopBtn);
+
         ViewCompat.setTransitionName(tvTitle, EXTRA_ID);
+        taskPosition = getIntent().getIntExtra(EXTRA_TASK_POSITION_TO_DELETE, 0);
         task = Task.load(Task.class, getIntent().getLongExtra(EXTRA_ID, 0));
     }
 
     @Override protected int getLayoutResource() {
         return R.layout.activity_detail;
+    }
+
+    Runnable updateTimerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateView();
+            if (task.isRunning()) {
+                updateTextViewHandler.postDelayed(updateTimerRunnable, 1000);
+            }
+        }
+    };
+
+    void startUpdatingView() {
+        if (task.isRunning()) {
+            updateTimerRunnable.run();
+        }
+    }
+
+    void stopUpdatingView() {
+        updateTextViewHandler.removeCallbacks(updateTimerRunnable);
     }
 
     public void updateDataOnViews() {
@@ -52,13 +84,71 @@ public class DetailActivity extends BaseActivity {
 
     @Override public void onResume() {
         super.onResume();
+        LoadButtons();
         updateDataOnViews();
+        startUpdatingView();
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        stopUpdatingView();
+    }
+
+    public void LoadButtons() {
+        if (task.isRunning()) {
+            inBtn.setEnabled(false);
+            outBtn.setEnabled(true);
+        } else {
+            outBtn.setEnabled(false);
+            inBtn.setEnabled(true);
+        }
+        if (task.isRunning() || task.workedMillis > 0)
+            stopBtn.setEnabled(true);
+        else
+            stopBtn.setEnabled(false);
+
+        updateView();
+    }
+
+    public void updateView() {
+        tvElapsedTime.setText(task.getCurrentDiff());
+    }
+
+    public void resumeStartTimer() {
+        task.resume();
+        LoadButtons();
+        startUpdatingView();
     }
 
 
+    public void stopTimer() {
+        task.stop();
+        //TODO: Update Works of this Task.
+        updateView();
+        LoadButtons();
+    }
+
+    public void pauseTimer() {
+        task.pause();
+        LoadButtons();
+    }
+
+    public void buttonsClick(View btn) {
+        switch (btn.getId()) {
+            case R.id.inBtn:
+                resumeStartTimer();
+                break;
+            case R.id.outBtn:
+                pauseTimer();
+                break;
+            case R.id.stopBtn:
+                stopTimer();
+                break;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.task_menu, menu);
         return true;
     }
@@ -94,8 +184,15 @@ public class DetailActivity extends BaseActivity {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
+                        for (Work w : task.works()) {
+                            w.delete();
+                        }
                         task.delete();
-                        startActivity(new Intent(DetailActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        if (task != null) {
+                            Intent intent = new Intent();
+                            intent.putExtra(EXTRA_TASK_POSITION_TO_DELETE, taskPosition);
+                            setResult(RESULT_OK, intent);
+                        }
                         finish();
                     }
                 })
@@ -135,12 +232,13 @@ public class DetailActivity extends BaseActivity {
         //TODO: Implement this method
     }
 
-    public static void launch(BaseActivity activity, View transitionView, long taskId) {
+    public static void launch(BaseActivity activity, View transitionView, long taskId, int taskPosition) {
         ActivityOptionsCompat options =
                 ActivityOptionsCompat.makeSceneTransitionAnimation(
                         activity, transitionView, EXTRA_ID);
         Intent intent = new Intent(activity, DetailActivity.class);
         intent.putExtra(EXTRA_ID, taskId);
-        ActivityCompat.startActivity(activity, intent, options.toBundle());
+        intent.putExtra(EXTRA_TASK_POSITION_TO_DELETE, taskPosition);
+        ActivityCompat.startActivityForResult(activity, intent, 1, options.toBundle());
     }
 }

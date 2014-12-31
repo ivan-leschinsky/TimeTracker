@@ -24,7 +24,7 @@ public class Work extends Model {
     @Column(name = "workedMillis")
     public String workedTime;
 
-    @Column(name = "Task")
+    @Column(name = "Task", onDelete = Column.ForeignKeyAction.CASCADE)
     public Task task;
 
     public Work(){

@@ -90,6 +90,9 @@ public class Task extends Model {
 
         Work nw = new Work(this, workedMillis);
         nw.save();
+
+        workedMillis = 0;
+        save();
         return nw;
     }
 
