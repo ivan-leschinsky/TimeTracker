@@ -1,4 +1,4 @@
-package by.vanopiano.timetracker;
+package by.vanopiano.timetracker.util;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

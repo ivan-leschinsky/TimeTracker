@@ -1,4 +1,4 @@
-package by.vanopiano.timetracker;
+package by.vanopiano.timetracker.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,17 +9,18 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import by.vanopiano.timetracker.R;
 import by.vanopiano.timetracker.models.Task;
 
 /**
  * Created by De_Vano on 31 dec, 2014
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdapter.ViewHolder> {
     private final Context mContext;
     private List<Task> mTasks;
 
-    public RecyclerViewAdapter(Context context) {
+    public TasksRecyclerAdapter(Context context) {
         mContext = context;
         mTasks = Task.getAll();
     }

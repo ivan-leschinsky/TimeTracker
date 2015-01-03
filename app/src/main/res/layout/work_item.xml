@@ -11,33 +11,35 @@
         android:id="@+id/cardView"
         android:layout_gravity="center"
         card_view:cardCornerRadius="5dp"
-        card_view:cardElevation="5dp"
+        card_view:cardElevation="3dp"
         android:layout_margin="5dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/task_small_title"
+                android:id="@+id/work_small_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="30dp"
+                android:textSize="20dp"
                 android:gravity="center"
-                android:padding="@dimen/spacing_large"
+                android:text="5:00:05"
+                android:padding="10dp"
                 android:layout_gravity="bottom"
                 />
 
             <TextView
-                android:id="@+id/task_small_time"
+                android:id="@+id/work_small_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/task_small_title"
+                android:layout_below="@+id/work_small_time"
                 android:textSize="20dp"
+                android:text="Jan, 10 2014"
                 android:gravity="center"
-                android:padding="@dimen/spacing_large"
+                android:padding="10dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_gravity="bottom"
                 />

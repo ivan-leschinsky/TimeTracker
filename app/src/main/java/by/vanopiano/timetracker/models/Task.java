@@ -86,8 +86,8 @@ public class Task extends Model {
     }
 
     public Work stop() {
-        pause();
-
+        if (isRunning())
+            pause();
         Work nw = new Work(this, workedMillis);
         nw.save();
 

@@ -3,7 +3,6 @@ package by.vanopiano.timetracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,26 +10,22 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.melnykov.fab.FloatingActionButton;
 
+import by.vanopiano.timetracker.adapters.TasksRecyclerAdapter;
 import by.vanopiano.timetracker.models.Task;
+import by.vanopiano.timetracker.util.RecyclerItemClickListener;
 
 /**
  * Created by De_Vano on 30 dec, 2014
  */
 public class MainActivity extends BaseActivity {
     private Handler updateTextViewHandler;
-    private RecyclerViewAdapter adapter;
+    private TasksRecyclerAdapter adapter;
     private RecyclerView recyclerView;
 
     @Override
@@ -45,10 +40,7 @@ public class MainActivity extends BaseActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-
-        adapter = new RecyclerViewAdapter(this);
+        adapter = new TasksRecyclerAdapter(this);
 
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(
@@ -137,7 +129,7 @@ public class MainActivity extends BaseActivity {
     };
 
     void startUpdatingViews() {
-        updateTimerRunnable.run();
+        updateTextViewHandler.postDelayed(updateTimerRunnable, 1000);
     }
 
     void stopUpdatingView() {

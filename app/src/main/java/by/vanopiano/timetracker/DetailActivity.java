@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,8 +21,10 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import by.vanopiano.timetracker.adapters.WorksRecyclerAdapter;
 import by.vanopiano.timetracker.models.Task;
 import by.vanopiano.timetracker.models.Work;
+import by.vanopiano.timetracker.util.RecyclerItemClickListener;
 
 /**
  * Created by De_Vano on 31 dec, 2014
@@ -29,10 +34,13 @@ public class DetailActivity extends BaseActivity {
     public static final String EXTRA_ID = "DetailActivity:id";
     public static final String EXTRA_TASK_POSITION_TO_DELETE = "DetailActivity:task_position";
     private Task task;
-    private TextView tvTitle, tvElapsedTime;
+    private TextView tvTitle, tvElapsedTime, tvDescription;
     private Button outBtn, inBtn, stopBtn;
     private Handler updateTextViewHandler;
     private int taskPosition;
+
+    private WorksRecyclerAdapter adapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,7 @@ public class DetailActivity extends BaseActivity {
 
         updateTextViewHandler = new Handler();
         tvTitle = (TextView) findViewById(R.id.view_task_title);
+        tvDescription = (TextView) findViewById(R.id.view_task_description);
         tvElapsedTime = (TextView) findViewById(R.id.view_task_elapsed_time);
 
         inBtn = (Button) findViewById(R.id.inBtn);
@@ -49,6 +58,23 @@ public class DetailActivity extends BaseActivity {
         ViewCompat.setTransitionName(tvTitle, EXTRA_ID);
         taskPosition = getIntent().getIntExtra(EXTRA_TASK_POSITION_TO_DELETE, 0);
         task = Task.load(Task.class, getIntent().getLongExtra(EXTRA_ID, 0));
+
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new WorksRecyclerAdapter(this, task);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnItemTouchListener(
+            new RecyclerItemClickListener(DetailActivity.this,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        removeWorkDialog(position);
+                    }
+                })
+        );
     }
 
     @Override protected int getLayoutResource() {
@@ -78,6 +104,7 @@ public class DetailActivity extends BaseActivity {
     public void updateDataOnViews() {
         if (task != null) {
             tvTitle.setText(task.name);
+            tvDescription.setText(task.description);
             tvElapsedTime.setText(task.getCurrentDiff());
         }
     }
@@ -96,16 +123,16 @@ public class DetailActivity extends BaseActivity {
 
     public void LoadButtons() {
         if (task.isRunning()) {
-            inBtn.setEnabled(false);
-            outBtn.setEnabled(true);
+            inBtn.setVisibility(View.GONE);
+            outBtn.setVisibility(View.VISIBLE);
         } else {
-            outBtn.setEnabled(false);
-            inBtn.setEnabled(true);
+            outBtn.setVisibility(View.GONE);
+            inBtn.setVisibility(View.VISIBLE);
         }
         if (task.isRunning() || task.workedMillis > 0)
-            stopBtn.setEnabled(true);
+            stopBtn.setVisibility(View.VISIBLE);
         else
-            stopBtn.setEnabled(false);
+            stopBtn.setVisibility(View.GONE);
 
         updateView();
     }
@@ -122,8 +149,10 @@ public class DetailActivity extends BaseActivity {
 
 
     public void stopTimer() {
-        task.stop();
-        //TODO: Update Works of this Task.
+        Work w = task.stop();
+
+        adapter.notifyTaskAdded(w);
+
         updateView();
         LoadButtons();
     }
@@ -178,7 +207,7 @@ public class DetailActivity extends BaseActivity {
 
     public void removeTaskDialog() {
         new MaterialDialog.Builder(DetailActivity.this)
-                .content(R.string.remove_task)
+                .content(R.string.really_delete)
                 .positiveText(R.string.action_delete)
                 .negativeText(R.string.cancel)
                 .callback(new MaterialDialog.ButtonCallback() {
@@ -198,6 +227,21 @@ public class DetailActivity extends BaseActivity {
                 })
                 .show();
     }
+
+    public void removeWorkDialog(final int position) {
+        new MaterialDialog.Builder(DetailActivity.this)
+                .content(R.string.really_delete)
+                .positiveText(R.string.action_delete)
+                .negativeText(R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        adapter.removeItem(position);
+                    }
+                })
+                .show();
+    }
+
     public void openEditDialog() {
         final View view = LayoutInflater.from(DetailActivity.this).inflate(R.layout.task_form, null);
         final EditText name_ed = (EditText) view.findViewById(R.id.tv_name);
@@ -215,13 +259,20 @@ public class DetailActivity extends BaseActivity {
                         String name = name_ed.getText().toString();
                         String desc = desc_ed.getText().toString();
                         if (!name.isEmpty()) {
-                            new Task(name, desc).save();
+                            task.name = name;
+                            task.description = desc;
+                            task.save();
                             updateDataOnViews();
                             Toast.makeText(DetailActivity.this, R.string.successfully_changed, Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         } else {
                             Toast.makeText(DetailActivity.this, R.string.should_fill_name_field, Toast.LENGTH_SHORT).show();
                         }
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
                     }
                 })
                 .autoDismiss(false)

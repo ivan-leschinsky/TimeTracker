@@ -9,7 +9,7 @@
     <string name="btn_pause">Pause</string>
     <string name="create_new_task">Create new task</string>
     <string name="edit_task">Edit task</string>
-    <string name="remove_task">Really delete?</string>
+    <string name="really_delete">Really delete?</string>
     <string name="save">Save</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>

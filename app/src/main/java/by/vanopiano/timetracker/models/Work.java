@@ -34,19 +34,11 @@ public class Work extends Model {
     public Work(Task task, long workedMillis){
         super();
         this.task = task;
+        this.workedTime = getWorkedTime(workedMillis);
         this.timestamp = new Date();
-        this.workedTime = getWorkedTime(workedMillis);
     }
 
-    //TODO: Remove this constructor
-    public Work(Task task, Date date, long workedMillis){
-        super();
-        this.task = task;
-        this.timestamp = date; // TODO: current Date
-        this.workedTime = getWorkedTime(workedMillis);
-    }
-
-    public String getWorkedTime(long workedMillis) {
+    private String getWorkedTime(long workedMillis) {
         return String.format("%02d:%02d:%02d",
                 TimeUnit.MILLISECONDS.toHours(workedMillis),
                 TimeUnit.MILLISECONDS.toMinutes(workedMillis) -
@@ -56,7 +48,7 @@ public class Work extends Model {
     }
 
     public String getDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy");
         return sdf.format(timestamp);
     }
 

@@ -17,7 +17,7 @@
     <string name="edit_task">Редактировать задание</string>
     <string name="no">Нет</string>
     <string name="yes">Да</string>
-    <string name="remove_task">Действительно удалить?</string>
     <string name="save">Сохранить</string>
     <string name="action_delete">Удалить</string>
+    <string name="really_delete">Действительно удалить?</string>
 </resources>
