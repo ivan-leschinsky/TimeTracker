@@ -21,4 +21,9 @@
     <string name="successfully_created">Successfully created</string>
     <string name="btn_stop">Stop</string>
     <string name="action_delete">Delete</string>
+    <string name="warning_many_tasks_running">Warning! Many tasks running now, pause one of them or change settings.</string>
+
+    <string name="pref_only_one_task_at_a_time">Only one task running</string>
+    <string name="pref_only_one_task_at_a_time_off">Many tasks could be started simultaniosly</string>
+    <string name="pref_only_one_task_at_a_time_on">Only one task can be started at the same time</string>
 </resources>

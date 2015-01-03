@@ -20,4 +20,8 @@
     <string name="save">Сохранить</string>
     <string name="action_delete">Удалить</string>
     <string name="really_delete">Действительно удалить?</string>
+    <string name="pref_only_one_task_at_a_time">Запущена только одна задача</string>
+    <string name="pref_only_one_task_at_a_time_off">Много задач могут быть запущены одновременно</string>
+    <string name="pref_only_one_task_at_a_time_on">Только одна задача может быть запущена</string>
+    <string name="warning_many_tasks_running">Внимание! Запущено много задач. Приостановите некторыое из них или измените настройки.</string>
 </resources>

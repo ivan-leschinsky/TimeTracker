@@ -75,10 +75,12 @@ public class Task extends Model {
     }
 
     public void pause() {
-        running = false;
-        addTime(System.currentTimeMillis() - startedMillis);
-        setStartedTime(0);
-        save();
+        if (running) {
+            running = false;
+            addTime(System.currentTimeMillis() - startedMillis);
+            setStartedTime(0);
+            save();
+        }
     }
 
     public void addTime(long millisAdd) {

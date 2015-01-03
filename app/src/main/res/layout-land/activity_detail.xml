@@ -1,0 +1,84 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.antonioleiva.materialeverywhere.DetailActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+    <LinearLayout
+        android:layout_below="@+id/toolbar"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/spacing_large">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:paddingLeft="40dp"
+            android:paddingRight="20dp"
+            >
+            <TextView
+                android:id="@+id/view_task_title"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="35dp"/>
+
+            <TextView
+                android:id="@+id/view_task_description"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:paddingBottom="@dimen/spacing_large"
+                android:paddingTop="@dimen/spacing_small"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:id="@+id/view_task_elapsed_time"
+                android:layout_gravity="center_horizontal"
+                android:textSize="35dp" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="@string/btn_start"
+                android:onClick="buttonsClick"
+                android:textColor="@color/colorPrimaryDark"
+                android:id="@+id/inBtn" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:onClick="buttonsClick"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="@string/btn_pause"
+                android:id="@+id/outBtn" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:onClick="buttonsClick"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="@string/btn_stop"
+                android:id="@+id/stopBtn" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_weight="14"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="@android:color/transparent"
+            android:paddingLeft="20dp"
+            android:paddingRight="40dp"
+            android:scrollbars="vertical"/>
+    </LinearLayout>
+</RelativeLayout>

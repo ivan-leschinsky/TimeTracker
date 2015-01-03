@@ -1,8 +1,10 @@
 package by.vanopiano.timetracker;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
@@ -42,9 +44,13 @@ public class DetailActivity extends BaseActivity {
     private WorksRecyclerAdapter adapter;
     private RecyclerView recyclerView;
 
+    SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         updateTextViewHandler = new Handler();
         tvTitle = (TextView) findViewById(R.id.view_task_title);
@@ -142,6 +148,11 @@ public class DetailActivity extends BaseActivity {
     }
 
     public void resumeStartTimer() {
+        if (sp.getBoolean("only_one_work_at_a_time", false)) {
+            for (Task t : Task.getAll()) {
+                t.pause();
+            }
+        }
         task.resume();
         LoadButtons();
         startUpdatingView();
@@ -280,7 +291,7 @@ public class DetailActivity extends BaseActivity {
     }
 
     public void openSettingsActivity() {
-        //TODO: Implement this method
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     public static void launch(BaseActivity activity, View transitionView, long taskId, int taskPosition) {

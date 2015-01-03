@@ -1,8 +1,10 @@
 package by.vanopiano.timetracker;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,13 +29,15 @@ public class MainActivity extends BaseActivity {
     private Handler updateTextViewHandler;
     private TasksRecyclerAdapter adapter;
     private RecyclerView recyclerView;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setActionBarIcon(R.drawable.ic_launcher);
-        updateTextViewHandler = new Handler();
 
+        updateTextViewHandler = new Handler();
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -69,37 +73,37 @@ public class MainActivity extends BaseActivity {
         final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.task_form, null);
 
         new MaterialDialog.Builder(MainActivity.this)
-                .title(R.string.create_new_task)
-                .customView(view, true)
-                .positiveText(R.string.save)
-                .negativeText(R.string.cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        String name = ((EditText) view.findViewById(R.id.tv_name)).
-                                getText().toString();
-                        String desc = ((EditText) view.findViewById(R.id.tv_description)).
-                                getText().toString();
-                        if (!name.isEmpty()) {
-                            Task t = new Task(name, desc);
-                            Toast.makeText(MainActivity.this,
-                                    R.string.successfully_created, Toast.LENGTH_SHORT).show();
-                            t.save();
-                            adapter.notifyTaskAdded(t);
-                            dialog.dismiss();
-                        } else {
-                            Toast.makeText(MainActivity.this,
-                                    R.string.should_fill_name_field, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
+            .title(R.string.create_new_task)
+            .customView(view, true)
+            .positiveText(R.string.save)
+            .negativeText(R.string.cancel)
+            .callback(new MaterialDialog.ButtonCallback() {
+                @Override
+                public void onPositive(MaterialDialog dialog) {
+                    String name = ((EditText) view.findViewById(R.id.tv_name)).
+                            getText().toString();
+                    String desc = ((EditText) view.findViewById(R.id.tv_description)).
+                            getText().toString();
+                    if (!name.isEmpty()) {
+                        Task t = new Task(name, desc);
+                        Toast.makeText(MainActivity.this,
+                                R.string.successfully_created, Toast.LENGTH_SHORT).show();
+                        t.save();
+                        adapter.addTask(t);
                         dialog.dismiss();
+                    } else {
+                        Toast.makeText(MainActivity.this,
+                                R.string.should_fill_name_field, Toast.LENGTH_SHORT).show();
                     }
-                })
-                .autoDismiss(false)
-                .show();
+                }
+
+                @Override
+                public void onNegative(MaterialDialog dialog) {
+                    dialog.dismiss();
+                }
+            })
+            .autoDismiss(false)
+            .show();
     }
 
     @Override protected int getLayoutResource() {
@@ -108,6 +112,7 @@ public class MainActivity extends BaseActivity {
 
     public void onResume() {
         super.onResume();
+        checkManyTasks();
         startUpdatingViews();
     }
 
@@ -116,8 +121,24 @@ public class MainActivity extends BaseActivity {
         stopUpdatingView();
     }
 
+    private void checkManyTasks() {
+        boolean atLeastOneTaskRunning = false;
+        if (sp.getBoolean("only_one_work_at_a_time", false)) {
+            for (Task t : Task.getAll()) {
+                if (t.isRunning()) {
+                    if (atLeastOneTaskRunning) {
+                        Toast.makeText(this, R.string.warning_many_tasks_running,
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    atLeastOneTaskRunning = true;
+                }
+            }
+        }
+    }
+
     private void openSettingsActivity() {
-//        startActivity(new Intent(this, SettingsActivity.class));
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     Runnable updateTimerRunnable = new Runnable() {

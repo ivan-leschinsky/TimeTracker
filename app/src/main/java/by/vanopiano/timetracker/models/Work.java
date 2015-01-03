@@ -48,7 +48,7 @@ public class Work extends Model {
     }
 
     public String getDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
         return sdf.format(timestamp);
     }
 

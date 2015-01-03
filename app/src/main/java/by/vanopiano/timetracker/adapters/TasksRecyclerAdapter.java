@@ -38,7 +38,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         viewHolder.mTime.setText(t.getCurrentDiff());
     }
 
-    public void notifyTaskAdded(Task task) {
+    public void addTask(Task task) {
         mTasks.add(task);
         notifyItemInserted(mTasks.indexOf(task) + 1);
     }

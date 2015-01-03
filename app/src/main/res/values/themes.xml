@@ -8,7 +8,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="actionBarSize">80dip</item>
 
-        <!--Remove this if it will be crashing in api < 21-->
         <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
 
         <item name="android:windowNoTitle">true</item>
