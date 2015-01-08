@@ -12,7 +12,8 @@
         android:layout_gravity="center"
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="5dp"
-        android:layout_margin="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp">
 
@@ -24,9 +25,11 @@
                 android:id="@+id/task_small_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="30dp"
+                android:textSize="25dp"
                 android:gravity="center"
-                android:padding="@dimen/spacing_large"
+                android:paddingTop="@dimen/spacing_large"
+                android:paddingLeft="@dimen/spacing_large"
+                android:paddingRight="@dimen/spacing_large"
                 android:layout_gravity="bottom"
                 />
 
@@ -35,9 +38,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/task_small_title"
-                android:textSize="20dp"
+                android:textSize="30dp"
                 android:gravity="center"
-                android:padding="@dimen/spacing_large"
+                android:paddingBottom="@dimen/spacing_large"
+                android:paddingLeft="@dimen/spacing_large"
+                android:paddingRight="@dimen/spacing_large"
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_gravity="bottom"
                 />

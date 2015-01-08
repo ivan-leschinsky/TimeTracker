@@ -56,6 +56,9 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     public long getTaskId(int position) {
         return mTasks.get(position).getId();
     }
+    public Task getTask(int position) {
+        return mTasks.get(position);
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTitle, mTime;

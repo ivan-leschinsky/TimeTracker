@@ -12,8 +12,7 @@
     <string name="name">Имя</string>
     <string name="should_fill_name_field">Необходимо заполнить поле названия</string>
     <string name="action_edit_task">Редактировать</string>
-    <string name="successfully_changed">Успешно изменено</string>
-    <string name="successfully_created">Успешно создано</string>
+    <string name="successfully_created">Задача была успешно создана</string>
     <string name="edit_task">Редактировать задание</string>
     <string name="no">Нет</string>
     <string name="yes">Да</string>
@@ -24,4 +23,27 @@
     <string name="pref_only_one_task_at_a_time_off">Много задач могут быть запущены одновременно</string>
     <string name="pref_only_one_task_at_a_time_on">Только одна задача может быть запущена</string>
     <string name="warning_many_tasks_running">Внимание! Запущено много задач. Приостановите некторыое из них или измените настройки.</string>
+    <string name="action_save_task">Сохранить</string>
+    <string name="go_to_the_location_settings">Хотите перейти в настройки для включения определения местоположения?</string>
+    <string name="save_this_as_resume_task_potition">Сохранить это местоположение, как место запуска задачи?</string>
+    <string name="current_resume_location">Текущее местоположение запуска и продолжения задачи</string>
+    <string name="location_resume_enabled">Включить запуск/продолжение задачи по местоположению</string>
+    <string name="warning_edit_task_time">Чтобы изменить время приостановите задачу пожалуйста.</string>
+    <string name="location_treshhold_meters">Радиус от точки на карте в метрах, в котором будет запущено задание.</string>
+    <string name="notif_start_now">Запустить</string>
+    <string name="notif_start_from">С</string>
+    <string name="notif_description">Нажатие на уведомление откроет задание.</string>
+    <string name="notif_pause_from">С</string>
+    <string name="notif_pause_now">Приостановить</string>
+    <string name="notif_would_you_like_to_pause">Хотите приостановить задачу \'</string>
+    <string name="notif_would_you_like_to_start">Хотите запустить задачу \'</string>
+    <string name="pref_use_gps">Использовать GPS для определения местоположения.</string>
+    <string name="pref_use_gps_off">GPS не будет использоваться.</string>
+    <string name="pref_use_gps_on">GPS будет использоваться.</string>
+    <string name="notif_pause_from_long">Приостановить с</string>
+    <string name="notif_pause_now_long">Приостановить сейчас</string>
+    <string name="notif_start_from_long">Запустить с</string>
+    <string name="notif_start_now_long">Запустить сейчас</string>
+    <string name="successfully_saved">Задача была успешно сохранена</string>
+    <string name="doesnt_exist">не существует</string>
 </resources>

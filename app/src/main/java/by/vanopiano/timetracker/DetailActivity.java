@@ -1,5 +1,6 @@
 package by.vanopiano.timetracker;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,21 +13,23 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.TimePicker;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import by.vanopiano.timetracker.adapters.WorksRecyclerAdapter;
+import by.vanopiano.timetracker.events.OnTaskPausedEvent;
+import by.vanopiano.timetracker.events.OnTaskStartedEvent;
 import by.vanopiano.timetracker.models.Task;
 import by.vanopiano.timetracker.models.Work;
+import by.vanopiano.timetracker.util.Helpers;
 import by.vanopiano.timetracker.util.RecyclerItemClickListener;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by De_Vano on 31 dec, 2014
@@ -57,22 +60,50 @@ public class DetailActivity extends BaseActivity {
         tvDescription = (TextView) findViewById(R.id.view_task_description);
         tvElapsedTime = (TextView) findViewById(R.id.view_task_elapsed_time);
 
+
+        final TimePickerDialog.OnTimeSetListener timePickedClickListener = new TimePickerDialog.OnTimeSetListener() {
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                task.setWorkedTime(hourOfDay, minute);
+                updateView();
+            }
+        };
+
+        View.OnClickListener timePickerClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (task.isRunning()) {
+                    Helpers.snackAlert(DetailActivity.this, R.string.warning_edit_task_time);
+                } else {
+
+                    new TimePickerDialog(DetailActivity.this,
+                            TimePickerDialog.THEME_DEVICE_DEFAULT_LIGHT,
+                            timePickedClickListener,
+                            task.getWorkedHours(), task.getWorkedMinutes(), true).show();
+                }
+            }
+        };
+
+        tvElapsedTime.setOnClickListener(timePickerClickListener);
+
         inBtn = (Button) findViewById(R.id.inBtn);
         outBtn = (Button) findViewById(R.id.outBtn);
         stopBtn = (Button) findViewById(R.id.stopBtn);
 
-        ViewCompat.setTransitionName(tvTitle, EXTRA_ID);
+        ViewCompat.setTransitionName(findViewById(R.id.detail_buttons), EXTRA_ID);
         taskPosition = getIntent().getIntExtra(EXTRA_TASK_POSITION_TO_DELETE, 0);
         task = Task.load(Task.class, getIntent().getLongExtra(EXTRA_ID, 0));
-
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new WorksRecyclerAdapter(this, task);
-        recyclerView.setAdapter(adapter);
+        if (task != null) {
+            adapter = new WorksRecyclerAdapter(this, task);
+            recyclerView.setAdapter(adapter);
+        } else {
+            finish();
+        }
         recyclerView.addOnItemTouchListener(
             new RecyclerItemClickListener(DetailActivity.this,
                 new RecyclerItemClickListener.OnItemClickListener() {
@@ -109,14 +140,17 @@ public class DetailActivity extends BaseActivity {
 
     public void updateDataOnViews() {
         if (task != null) {
+            task.setNotificationStartedMillis(0);
             tvTitle.setText(task.name);
             tvDescription.setText(task.description);
             tvElapsedTime.setText(task.getCurrentDiff());
+            //TODO: Show current distance to this task if task.locationResumeEnabled
         }
     }
 
     @Override public void onResume() {
         super.onResume();
+        updateTask();
         LoadButtons();
         updateDataOnViews();
         startUpdatingView();
@@ -127,14 +161,28 @@ public class DetailActivity extends BaseActivity {
         stopUpdatingView();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {return;}
+        if (data.getBooleanExtra(EditTaskActivity.EXTRA_TASK_SAVED, false)) {
+            Helpers.snackInfo(DetailActivity.this, R.string.successfully_saved);
+        }
+    }
+
+    private void updateTask() {
+        task = Task.load(Task.class, task.getId());
+    }
     public void LoadButtons() {
         if (task.isRunning()) {
             inBtn.setVisibility(View.GONE);
             outBtn.setVisibility(View.VISIBLE);
+            //TODO: Hide button based on task.notificationStartedMillis  !
         } else {
+            //TODO: Show button based on task.notificationStartedMillis, as in the notification. If it > 0
             outBtn.setVisibility(View.GONE);
             inBtn.setVisibility(View.VISIBLE);
         }
+
         if (task.isRunning() || task.workedMillis > 0)
             stopBtn.setVisibility(View.VISIBLE);
         else
@@ -200,7 +248,7 @@ public class DetailActivity extends BaseActivity {
                 openSettingsActivity();
                 return true;
             case R.id.action_edit_task:
-                openEditDialog();
+                startActivityForResult(new Intent(this, EditTaskActivity.class).putExtra(EditTaskActivity.EXTRA_ID, task.getId()), 1);
                 return true;
             case R.id.action_delete_task:
                 removeTaskDialog();
@@ -253,47 +301,6 @@ public class DetailActivity extends BaseActivity {
                 .show();
     }
 
-    public void openEditDialog() {
-        final View view = LayoutInflater.from(DetailActivity.this).inflate(R.layout.task_form, null);
-        final EditText name_ed = (EditText) view.findViewById(R.id.tv_name);
-        final EditText desc_ed = (EditText) view.findViewById(R.id.tv_description);
-        name_ed.setText(task.name);
-        desc_ed.setText(task.description);
-        new MaterialDialog.Builder(DetailActivity.this)
-                .title(R.string.edit_task)
-                .customView(view, true)
-                .positiveText(R.string.save)
-                .negativeText(R.string.cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        String name = name_ed.getText().toString();
-                        String desc = desc_ed.getText().toString();
-                        if (!name.isEmpty()) {
-                            task.name = name;
-                            task.description = desc;
-                            task.save();
-                            updateDataOnViews();
-                            Toast.makeText(DetailActivity.this, R.string.successfully_changed, Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        } else {
-                            Toast.makeText(DetailActivity.this, R.string.should_fill_name_field, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.dismiss();
-                    }
-                })
-                .autoDismiss(false)
-                .show();
-    }
-
-    public void openSettingsActivity() {
-        startActivity(new Intent(this, SettingsActivity.class));
-    }
-
     public static void launch(BaseActivity activity, View transitionView, long taskId, int taskPosition) {
         ActivityOptionsCompat options =
                 ActivityOptionsCompat.makeSceneTransitionAnimation(
@@ -302,5 +309,31 @@ public class DetailActivity extends BaseActivity {
         intent.putExtra(EXTRA_ID, taskId);
         intent.putExtra(EXTRA_TASK_POSITION_TO_DELETE, taskPosition);
         ActivityCompat.startActivityForResult(activity, intent, 1, options.toBundle());
+    }
+
+    public void onEvent(OnTaskStartedEvent event){
+        if (event.taskId == task.getId()) {
+            updateTask();
+            startUpdatingView();
+        }
+    }
+
+    public void onEvent(OnTaskPausedEvent event){
+        if (event.taskId == task.getId()) {
+            updateTask();
+            stopUpdatingView();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 }

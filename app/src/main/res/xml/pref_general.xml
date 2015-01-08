@@ -7,4 +7,11 @@
         android:summaryOn="@string/pref_only_one_task_at_a_time_on"
         android:defaultValue="false" />
 
+    <CheckBoxPreference
+        android:key="use_gps"
+        android:title="@string/pref_use_gps"
+        android:summaryOff="@string/pref_use_gps_off"
+        android:summaryOn="@string/pref_use_gps_on"
+        android:defaultValue="false" />
+
 </PreferenceScreen>

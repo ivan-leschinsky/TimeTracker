@@ -13,19 +13,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.melnykov.fab.FloatingActionButton;
 
 import by.vanopiano.timetracker.adapters.TasksRecyclerAdapter;
 import by.vanopiano.timetracker.models.Task;
+import by.vanopiano.timetracker.services.BaseTaskNotificationService;
+import by.vanopiano.timetracker.services.LocationCheckService;
+import by.vanopiano.timetracker.util.Helpers;
 import by.vanopiano.timetracker.util.RecyclerItemClickListener;
 
 /**
  * Created by De_Vano on 30 dec, 2014
  */
 public class MainActivity extends BaseActivity {
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private Handler updateTextViewHandler;
     private TasksRecyclerAdapter adapter;
     private RecyclerView recyclerView;
@@ -48,14 +53,13 @@ public class MainActivity extends BaseActivity {
 
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(MainActivity.this,
-                        new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        DetailActivity.launch(MainActivity.this,
-                                view.findViewById(R.id.task_small_title),
-                                adapter.getTaskId(position), position);
+            new RecyclerItemClickListener(MainActivity.this,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        DetailActivity.launch(MainActivity.this, view, adapter.getTaskId(position), position);
                     }
-                })
+            })
         );
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -67,6 +71,10 @@ public class MainActivity extends BaseActivity {
                 showAddTaskDialog();
             }
         });
+
+        checkPlayServices();
+
+        startService(new Intent(this, LocationCheckService.class));
     }
 
     private void showAddTaskDialog() {
@@ -86,14 +94,13 @@ public class MainActivity extends BaseActivity {
                             getText().toString();
                     if (!name.isEmpty()) {
                         Task t = new Task(name, desc);
-                        Toast.makeText(MainActivity.this,
-                                R.string.successfully_created, Toast.LENGTH_SHORT).show();
+                        Helpers.snackInfo(MainActivity.this, R.string.successfully_created);
+
                         t.save();
                         adapter.addTask(t);
                         dialog.dismiss();
                     } else {
-                        Toast.makeText(MainActivity.this,
-                                R.string.should_fill_name_field, Toast.LENGTH_SHORT).show();
+                        Helpers.snackAlert(MainActivity.this, R.string.should_fill_name_field);
                     }
                 }
 
@@ -127,18 +134,13 @@ public class MainActivity extends BaseActivity {
             for (Task t : Task.getAll()) {
                 if (t.isRunning()) {
                     if (atLeastOneTaskRunning) {
-                        Toast.makeText(this, R.string.warning_many_tasks_running,
-                                Toast.LENGTH_LONG).show();
+                        Helpers.snackAlert(this, R.string.warning_many_tasks_running);
                         return;
                     }
                     atLeastOneTaskRunning = true;
                 }
             }
         }
-    }
-
-    private void openSettingsActivity() {
-        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     Runnable updateTimerRunnable = new Runnable() {
@@ -179,5 +181,17 @@ public class MainActivity extends BaseActivity {
         if (data == null) {return;}
         int position = data.getIntExtra(DetailActivity.EXTRA_TASK_POSITION_TO_DELETE, 0);
         adapter.removeItem(position);
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+            return false;
+        }
+        return true;
     }
 }

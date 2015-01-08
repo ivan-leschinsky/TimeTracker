@@ -3,6 +3,7 @@ package by.vanopiano.timetracker;
 /**
  * Created by De_Vano on 30 dec, 2014
  */
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,5 +26,9 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     protected void setActionBarIcon(int iconRes) {
         toolbar.setNavigationIcon(iconRes);
+    }
+
+    public void openSettingsActivity() {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 }

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="multiprocess_preferences_authority" translatable="false">by.vanopiano.timetracker.PREFFERENCE_AUTHORITY</string>
 
     <string name="app_name">Time Tracker</string>
     <string name="task_view">View Task</string>
     <string name="action_settings">Settings</string>
     <string name="action_edit_task">Edit</string>
+    <string name="action_save_task">Save</string>
     <string name="btn_start">Start</string>
     <string name="btn_pause">Pause</string>
     <string name="create_new_task">Create new task</string>
@@ -16,14 +18,40 @@
     <string name="cancel">Cancel</string>
     <string name="name">Name</string>
     <string name="description">Description</string>
-    <string name="should_fill_name_field">You must fill name field</string>
-    <string name="successfully_changed">Successfully changed</string>
-    <string name="successfully_created">Successfully created</string>
+    <string name="location_treshhold_meters">Radius in meters to trigger task starting.</string>
+    <string name="location_resume_enabled">Enable location-based resuming</string>
+    <string name="should_fill_name_field">You should fill name field</string>
+    <string name="successfully_saved">Task was successfully saved</string>
+    <string name="successfully_created">Task was successfully created.</string>
     <string name="btn_stop">Stop</string>
     <string name="action_delete">Delete</string>
-    <string name="warning_many_tasks_running">Warning! Many tasks running now, pause one of them or change settings.</string>
+    <string name="doesnt_exist">doesn\'n exist</string>
 
+    <string name="notif_description">Clicking to this notification will open the task.</string>
+    <string name="notif_would_you_like_to_start">Would you like to start \'</string>
+    <string name="notif_would_you_like_to_pause">Would you like to pause \'</string>
+    <string name="notif_start_now">Start</string>
+    <string name="notif_start_now_long">Start now</string>
+    <string name="notif_start_from">From</string>
+    <string name="notif_start_from_long">Start from</string>
+    <string name="notif_pause_now">Pause</string>
+    <string name="notif_pause_now_long">Pause now</string>
+    <string name="notif_pause_from">From</string>
+    <string name="notif_pause_from_long">Pause from</string>
+
+    <string name="warning_many_tasks_running">Warning! Many tasks running now, pause one of them or change settings.</string>
+    <string name="warning_edit_task_time">To change time pause the task please.</string>
+
+    <!-- Location -->
+    <string name="go_to_the_location_settings">Do you want to enable location detection in the settings?</string>
+    <string name="save_this_as_resume_task_potition">Save this location as task resuming location?</string>
+    <string name="current_resume_location">Current location of resuming task</string>
+
+    <!-- Preferences -->
     <string name="pref_only_one_task_at_a_time">Only one task running</string>
     <string name="pref_only_one_task_at_a_time_off">Many tasks could be started simultaniosly</string>
     <string name="pref_only_one_task_at_a_time_on">Only one task can be started at the same time</string>
+    <string name="pref_use_gps">Use GPS to detect your location.</string>
+    <string name="pref_use_gps_on">GPS will be used.</string>
+    <string name="pref_use_gps_off">GPS won\'t be used.</string>
 </resources>

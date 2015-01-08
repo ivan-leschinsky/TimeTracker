@@ -1,0 +1,78 @@
+<RelativeLayout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditTaskActivity">
+
+    <include layout="@layout/toolbar" android:id="@+id/toolbar" />
+
+    <LinearLayout
+        android:layout_below="@id/toolbar"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:paddingTop="@dimen/spacing_large"
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
+        android:descendantFocusability="beforeDescendants"
+        >
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/formCardView"
+            android:layout_weight="70"
+            android:layout_gravity="center_horizontal"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardElevation="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp">
+
+            <RelativeLayout
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_name"
+                    android:layout_gravity="center_horizontal"
+                    android:hint="@string/name" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/tv_name"
+                    android:id="@+id/tv_description"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:layout_gravity="center_horizontal"
+                    android:hint="@string/description" />
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="30"
+            android:id="@+id/cardView"
+            android:visibility="visible"
+            android:layout_gravity="center_horizontal"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardElevation="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp">
+
+            <include layout="@layout/activity_edit_location_partial"/>
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+</RelativeLayout>

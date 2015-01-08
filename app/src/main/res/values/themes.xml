@@ -12,6 +12,7 @@
 
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
 
         <!--
             All dialogs will default to Theme.LIGHT.
@@ -26,7 +27,7 @@
         <!--
             By default, the content text is derived from the ?android:textColorSecondary OS attribute.
         -->
-        <item name="md_content_color">@color/colorPrimaryDark</item>
+        <item name="md_content_color">#ff636363</item>
 
         <!--
             By default, the accent color is derived from the colorAccent attribute of AppCompat or

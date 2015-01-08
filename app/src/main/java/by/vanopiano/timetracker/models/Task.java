@@ -1,12 +1,17 @@
 package by.vanopiano.timetracker.models;
 
+import android.location.Location;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import by.vanopiano.timetracker.util.Helpers;
 
 /**
  * Created by De_Vano on 30 dec, 2014
@@ -29,6 +34,23 @@ public class Task extends Model {
 
     @Column(name = "startedMillis")
     public long startedMillis;
+
+    @Column(name = "notificationStartedMillis")
+    public long notificationStartedMillis = 0;
+
+    @Column(name = "ResumeLatitude")
+    public double latitude = 0;
+
+    @Column(name = "ResumeLongitude")
+    public double longitude = 0;
+
+    @Column(name = "LocationResumeEnabled")
+    public boolean locationResumeEnabled = false;
+
+    @Column(name = "LocationTreshhold")
+    public int locationTreshholdMeters = 100;
+
+    public double distance = -1;
 
     public Task(){
         super();
@@ -63,24 +85,70 @@ public class Task extends Model {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff)));
     }
 
+    public void setNotificationStartedMillis(long notificationStartedMillis) {
+        this.notificationStartedMillis = notificationStartedMillis;
+        save();
+    }
+
+    public int getWorkedHours() {
+        return (int)TimeUnit.MILLISECONDS.toHours(workedMillis);
+    }
+
+    public int getWorkedMinutes() {
+        return (int)(TimeUnit.MILLISECONDS.toMinutes(workedMillis) -
+                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(workedMillis)));
+    }
+
+    public void setWorkedTime(int hours, int minutes) {
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(workedMillis) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(workedMillis));
+        this.workedMillis = TimeUnit.HOURS.toMillis(hours)
+                + TimeUnit.MINUTES.toMillis(minutes)
+                + TimeUnit.SECONDS.toMillis(seconds);
+        save();
+    }
+
     private void setStartedTime(long millis) {
         startedMillis = millis;
     }
 
-
-    public void resume() {
-        running = true;
-        setStartedTime(System.currentTimeMillis());
+    public void setResumeLocation(LatLng location) {
+        this.latitude = location.latitude;
+        this.longitude = location.longitude;
         save();
     }
 
-    public void pause() {
+    public LatLng getResumeLocation() {
+        return new LatLng(latitude, longitude);
+    }
+
+    public boolean inDistance(Location currentLocation) {
+        distance = Helpers.distance(currentLocation.getLatitude(), currentLocation.getLongitude(), latitude, longitude);
+        return distance < locationTreshholdMeters;
+    }
+
+    public void resume() {
+        resume(System.currentTimeMillis());
+    }
+
+    public void resume(long startedMillis) {
+        running = true;
+        notificationStartedMillis = 0;
+        setStartedTime(startedMillis);
+        save();
+    }
+
+    public void pause(long pausedMillis) {
         if (running) {
             running = false;
-            addTime(System.currentTimeMillis() - startedMillis);
+            addTime(pausedMillis - startedMillis);
             setStartedTime(0);
             save();
         }
+    }
+
+    public void pause() {
+        pause(System.currentTimeMillis());
     }
 
     public void addTime(long millisAdd) {
@@ -97,7 +165,6 @@ public class Task extends Model {
         save();
         return nw;
     }
-
 
     public static List<Task> getAll() {
         return new Select()
