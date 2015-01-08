@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -8,13 +11,28 @@ android {
         applicationId "by.vanopiano.timetracker"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 5
-        versionName "2.1.0"
+        versionCode 6
+        versionName "2.1.1"
     }
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(properties.getProperty('STORE_FILE_NAME'))
+            storePassword properties.getProperty('STORE_PASSWORD')
+            keyAlias properties.getProperty('KEY_ALIAS')
+            keyPassword properties.getProperty('KEY_PASSWORD')
+        }
+
+        buildTypes {
+            release {
+                minifyEnabled false
+                signingConfig signingConfigs.release
+            }
         }
     }
 }
