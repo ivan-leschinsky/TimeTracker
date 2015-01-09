@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
+
 int VERSION_CODE = 6
-String APK_NAME = "time_tracker"
+String APK_PREFIX = "time_tracker"
 String VERSION_NAME = "2.1.1"
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
+Properties privateProps = new Properties()
+privateProps.load(project.rootProject.file('local.properties').newDataInputStream())
 
-project.archivesBaseName = APK_NAME + "_" + VERSION_NAME;
+project.archivesBaseName = APK_PREFIX + "_" + VERSION_NAME;
 
 android {
     compileSdkVersion 21
@@ -28,10 +29,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(properties.getProperty('STORE_FILE_NAME'))
-            storePassword properties.getProperty('STORE_PASSWORD')
-            keyAlias properties.getProperty('KEY_ALIAS')
-            keyPassword properties.getProperty('KEY_PASSWORD')
+            storeFile file(privateProps.getProperty('STORE_FILE_NAME'))
+            storePassword privateProps.getProperty('STORE_PASSWORD')
+            keyAlias privateProps.getProperty('KEY_ALIAS')
+            keyPassword privateProps.getProperty('KEY_PASSWORD')
         }
 
         buildTypes {
@@ -44,17 +45,19 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    // DB
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    // UI and utils
     compile 'com.melnykov:floatingactionbutton:1.1.0'
     compile 'com.afollestad:material-dialogs:0.5.1'
-    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    compile 'com.github.mrengineer13:snackbar:0.5.0'
+    compile 'de.greenrobot:eventbus:2.4.0'
+    // Support older android versions
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.2'
     compile 'com.android.support:cardview-v7:21.0.2'
+    // Google services
     compile 'com.google.android.gms:play-services-location:6.5.87'
     compile 'com.google.android.gms:play-services-maps:6.5.87'
-
-    compile 'com.github.mrengineer13:snackbar:0.5.0'
-    compile 'de.greenrobot:eventbus:2.4.0'
 }
