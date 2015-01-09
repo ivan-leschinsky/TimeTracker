@@ -2,7 +2,13 @@
 
 Simple time tracker for the personal tasks work logging.
 
-**[Download latest release](https://github.com/ivan-leschinsky/TimeTracker/releases/latest)**
+
+<a href="https://play.google.com/store/apps/details?id=by.vanopiano.timetracker">
+  <img alt="Android app on Google Play"
+       src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" />
+</a>
+
+Or download the **[latest release][1]** from the Github.
 
 ### Features:
 * Creating tasks and logging worked time on this task.
@@ -62,3 +68,5 @@ Simple time tracker for the personal tasks work logging.
 
 
 
+
+ [1]: https://github.com/ivan-leschinsky/TimeTracker/releases/latest

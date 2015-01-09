@@ -1,7 +1,12 @@
 apply plugin: 'com.android.application'
+int VERSION_CODE = 6
+String APK_NAME = "time_tracker"
+String VERSION_NAME = "2.1.1"
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+project.archivesBaseName = APK_NAME + "_" + VERSION_NAME;
 
 android {
     compileSdkVersion 21
@@ -11,9 +16,10 @@ android {
         applicationId "by.vanopiano.timetracker"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 6
-        versionName "2.1.1"
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
     }
+
     buildTypes {
         debug {
             minifyEnabled false
