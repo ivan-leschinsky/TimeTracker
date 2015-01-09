@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
-int VERSION_CODE = 6
+int VERSION_CODE = 7
 String APK_PREFIX = "time_tracker"
-String VERSION_NAME = "2.1.1"
+String VERSION_NAME = "2.1.2"
 
 Properties privateProps = new Properties()
 privateProps.load(project.rootProject.file('local.properties').newDataInputStream())
