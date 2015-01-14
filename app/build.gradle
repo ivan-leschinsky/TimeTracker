@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
-int VERSION_CODE = 9
+int VERSION_CODE = 10
 String APK_PREFIX = "time_tracker"
-String VERSION_NAME = "2.2.0"
+String VERSION_NAME = "2.2.1"
 
 Properties privateProps = new Properties()
 privateProps.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -37,7 +37,7 @@ android {
 
         buildTypes {
             release {
-                debuggable true
+                debuggable false
                 minifyEnabled false
                 signingConfig signingConfigs.release
             }
