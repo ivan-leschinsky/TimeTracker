@@ -23,6 +23,18 @@
             android:cacheColorHint="@android:color/transparent"
             android:scrollbars="vertical"/>
 
+        <TextView
+            android:drawableTop="@drawable/empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:id="@+id/empty_recycler_view"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="25dp"
+            android:text="Here will be your tasks."
+            android:padding="@dimen/spacing_large" />
+
         <com.melnykov.fab.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"

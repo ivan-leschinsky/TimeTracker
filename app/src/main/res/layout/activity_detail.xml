@@ -40,4 +40,21 @@
         android:layout_height="match_parent"
         android:cacheColorHint="@android:color/transparent"
         android:scrollbars="vertical"/>
+
+    <TextView
+        android:drawableTop="@drawable/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:id="@+id/empty_recycler_view"
+        android:layout_below="@+id/cardView"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
+        android:text="Here will be your work history"
+        android:padding="@dimen/spacing_large" />
 </RelativeLayout>

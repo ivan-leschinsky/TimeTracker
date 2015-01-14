@@ -1,0 +1,1 @@
+ALTER TABLE Tasks ADD COLUMN holdedTime LONG;

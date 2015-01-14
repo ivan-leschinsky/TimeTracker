@@ -1,5 +1,6 @@
 package by.vanopiano.timetracker;
 
+import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,11 +21,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.melnykov.fab.FloatingActionButton;
 
 import by.vanopiano.timetracker.adapters.TasksRecyclerAdapter;
+import by.vanopiano.timetracker.events.OnTaskStartedEvent;
 import by.vanopiano.timetracker.models.Task;
-import by.vanopiano.timetracker.services.BaseTaskNotificationService;
 import by.vanopiano.timetracker.services.LocationCheckService;
 import by.vanopiano.timetracker.util.Helpers;
 import by.vanopiano.timetracker.util.RecyclerItemClickListener;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by De_Vano on 30 dec, 2014
@@ -34,6 +36,7 @@ public class MainActivity extends BaseActivity {
     private Handler updateTextViewHandler;
     private TasksRecyclerAdapter adapter;
     private RecyclerView recyclerView;
+    private View emptyRecyclerView;
     SharedPreferences sp;
 
     @Override
@@ -52,6 +55,8 @@ public class MainActivity extends BaseActivity {
         adapter = new TasksRecyclerAdapter(this);
 
         recyclerView.setAdapter(adapter);
+        emptyRecyclerView = findViewById(R.id.empty_recycler_view);
+
         recyclerView.addOnItemTouchListener(
             new RecyclerItemClickListener(MainActivity.this,
                 new RecyclerItemClickListener.OnItemClickListener() {
@@ -98,6 +103,8 @@ public class MainActivity extends BaseActivity {
 
                         t.save();
                         adapter.addTask(t);
+                        updateAdapter();
+                        checkEmptyView();
                         dialog.dismiss();
                     } else {
                         Helpers.snackAlert(MainActivity.this, R.string.should_fill_name_field);
@@ -120,6 +127,7 @@ public class MainActivity extends BaseActivity {
     public void onResume() {
         super.onResume();
         checkManyTasks();
+        checkEmptyView();
         startUpdatingViews();
     }
 
@@ -179,8 +187,11 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
-        int position = data.getIntExtra(DetailActivity.EXTRA_TASK_POSITION_TO_DELETE, 0);
-        adapter.removeItem(position);
+        if (data.hasExtra(DetailActivity.EXTRA_TASK_POSITION_TO_DELETE)) {
+            int position = data.getIntExtra(DetailActivity.EXTRA_TASK_POSITION_TO_DELETE, 0);
+            adapter.removeItem(position);
+            checkEmptyView();
+        }
     }
 
     private boolean checkPlayServices() {
@@ -193,5 +204,15 @@ public class MainActivity extends BaseActivity {
             return false;
         }
         return true;
+    }
+
+    private void checkEmptyView() {
+        emptyRecyclerView.setVisibility(adapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+    }
+
+    private void updateAdapter() {
+        adapter = new TasksRecyclerAdapter(MainActivity.this);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 }

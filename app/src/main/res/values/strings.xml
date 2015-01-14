@@ -39,6 +39,7 @@
     <string name="notif_pause_now_long">Pause now</string>
     <string name="notif_pause_from">From</string>
     <string name="notif_pause_from_long">Pause from</string>
+    <string name="notif_later">Later</string>
 
     <string name="warning_many_tasks_running">Warning! Many tasks running now, pause one of them or change settings.</string>
     <string name="warning_edit_task_time">To change time pause the task please.</string>
@@ -55,4 +56,9 @@
     <string name="pref_use_gps">Use GPS to detect your location.</string>
     <string name="pref_use_gps_on">GPS will be used.</string>
     <string name="pref_use_gps_off">GPS won\'t be used.</string>
+    <string name="pref_later_minutes">Number of minutes for holding task on notification pressed.</string>
+    <string name="pref_stability_seconds">Time for location detection before starting task, seconds</string>
+    <string name="pref_swiping_notification_holding">Swiping notification will hold the task</string>
+    <string name="pref_swiping_notification_holding_off">Notification will contain \'Later\' button</string>
+    <string name="pref_swiping_notification_holding_on">Task could be holded by swiping the notification.</string>
 </resources>

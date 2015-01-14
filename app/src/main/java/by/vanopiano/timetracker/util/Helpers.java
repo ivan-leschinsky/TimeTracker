@@ -14,24 +14,26 @@ import android.widget.Toast;
 import com.github.mrengineer13.snackbar.SnackBar;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import by.vanopiano.timetracker.DetailActivity;
 import by.vanopiano.timetracker.R;
 import by.vanopiano.timetracker.models.Task;
 import by.vanopiano.timetracker.services.BaseTaskNotificationService;
 import by.vanopiano.timetracker.services.EarlyActionTaskNotificationService;
+import by.vanopiano.timetracker.services.HoldLateService;
 import by.vanopiano.timetracker.services.NowActionTaskNotificationService;
 
 /**
  * Created by De_Vano on 07 Jan, 2015
  */
-public class Helpers {
+public class
+        Helpers {
 
-    public static void createNotification(Context mContext, Task task, int taskType) {
+    public static void createNotification(Context mContext, Task task, int taskType, boolean swipingNotificationHolding) {
         Context context = mContext;
 
         String title, startPauseText, startPauseEarlierText,
+        later = context.getString(R.string.notif_later),
         text = context.getString(R.string.notif_description);
         int startPauseIcon, startPauseEarlierIcon;
 
@@ -60,7 +62,9 @@ public class Helpers {
             task.setNotificationStartedMillis(System.currentTimeMillis());
             notificationStartedMillis = task.notificationStartedMillis;
         }
-        Intent activityIntent = new Intent(context, DetailActivity.class).putExtra(DetailActivity.EXTRA_ID, task.getId());
+
+        Intent activityIntent = new Intent(context, DetailActivity.class)
+                .putExtra(DetailActivity.EXTRA_ID, task.getId());
 
         Intent startNowIntent = new Intent(context, NowActionTaskNotificationService.class)
                 .putExtra(BaseTaskNotificationService.NOTIF_TASK_ID, task.getId())
@@ -71,10 +75,14 @@ public class Helpers {
                 .putExtra(BaseTaskNotificationService.NOTIF_TASK_TYPE, taskType)
                 .putExtra(BaseTaskNotificationService.NOTIF_STARTED_MILLIS, notificationStartedMillis);
 
+        Intent holdIntent = new Intent(context, HoldLateService.class)
+                .putExtra(BaseTaskNotificationService.NOTIF_TASK_ID, task.getId());
 
         PendingIntent piActivity = PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent piStartPauseFromNow = PendingIntent.getService(context, 0, startNowIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent piStartPauseFromEarlier = PendingIntent.getService(context, 0, startEarlierIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent piHoldTask = PendingIntent.getService(context, 0, holdIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         String formattedStartedTime = new SimpleDateFormat(" HH:mm").format(notificationStartedMillis);
 
@@ -88,6 +96,11 @@ public class Helpers {
                 .setContentIntent(piActivity)
                 .addAction(startPauseIcon, startPauseText, piStartPauseFromNow)
                 .addAction(startPauseEarlierIcon, startPauseEarlierText + formattedStartedTime, piStartPauseFromEarlier);
+
+        if (swipingNotificationHolding) {
+            //TODO: setup delete notification PI
+        } else
+            nBuilder.addAction(R.drawable.ic_notif_start_pause_later, later, piHoldTask);
 
         int notificationId = task.getId().intValue();
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(notificationId, nBuilder.build());

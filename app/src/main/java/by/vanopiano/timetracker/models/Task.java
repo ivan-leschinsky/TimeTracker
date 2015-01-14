@@ -1,6 +1,9 @@
 package by.vanopiano.timetracker.models;
 
+import android.content.Context;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationManager;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
@@ -50,6 +53,12 @@ public class Task extends Model {
     @Column(name = "LocationTreshhold")
     public int locationTreshholdMeters = 100;
 
+    @Column(name = "TimeApperedInLocation")
+    public long timeApperedInLocation = 0;
+
+    @Column(name = "holdedTime")
+    public long holdedTime = 0;
+
     public double distance = -1;
 
     public Task(){
@@ -62,6 +71,10 @@ public class Task extends Model {
         this.description = description;
     }
 
+    public boolean isStableLocation(int stabilitySeconds) {
+        return timeApperedInLocation > 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - timeApperedInLocation) >= stabilitySeconds;
+    }
+
     public boolean isPaused() {
         return !running;
     }
@@ -70,6 +83,13 @@ public class Task extends Model {
         return running;
     }
 
+    public void updateHoldedTime() {
+        holdedTime = System.currentTimeMillis();
+        save();
+    }
+    public boolean isNotHolded(int settingMinutes) {
+        return TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - holdedTime) >= settingMinutes;
+    }
     public String getCurrentDiff() {
         long diff;
         if (isPaused())
@@ -87,6 +107,15 @@ public class Task extends Model {
 
     public void setNotificationStartedMillis(long notificationStartedMillis) {
         this.notificationStartedMillis = notificationStartedMillis;
+        save();
+    }
+
+    public void updateTimeApperedInLocation() {
+        timeApperedInLocation = System.currentTimeMillis();
+        save();
+    }
+    public void clearTimeApperedInLocation() {
+        timeApperedInLocation = 0;
         save();
     }
 
@@ -123,6 +152,8 @@ public class Task extends Model {
     }
 
     public boolean inDistance(Location currentLocation) {
+        if (currentLocation == null)
+            return false;
         distance = Helpers.distance(currentLocation.getLatitude(), currentLocation.getLongitude(), latitude, longitude);
         return distance < locationTreshholdMeters;
     }

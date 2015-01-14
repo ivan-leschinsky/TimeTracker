@@ -41,7 +41,7 @@
             android:value="TimeTracker.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="5" />
+            android:value="8" />
         <meta-data
             android:name="AA_MODELS"
             android:value="by.vanopiano.timetracker.models.Task, by.vanopiano.timetracker.models.Work" />
@@ -92,6 +92,7 @@
 
         <service android:name=".services.EarlyActionTaskNotificationService" />
         <service android:name=".services.NowActionTaskNotificationService" />
+        <service android:name=".services.HoldLateService"/>
 
         <receiver android:name=".receivers.BootReceiver">
             <intent-filter>

@@ -23,8 +23,7 @@ public class BaseTaskNotificationService extends Service {
     public static final int NOTIF_TASK_TYPE_RESUME = 0;
     public static final int NOTIF_TASK_TYPE_PAUSE = 1;
 
-    private Context context;
-
+    protected Context context;
     protected long startedPausedMillis = 0;
     protected Task task;
 

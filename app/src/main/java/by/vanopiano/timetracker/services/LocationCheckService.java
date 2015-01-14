@@ -3,10 +3,13 @@ package by.vanopiano.timetracker.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
+
 import by.vanopiano.timetracker.models.Task;
 import by.vanopiano.timetracker.util.Helpers;
 import by.vanopiano.timetracker.util.MultiprocessPreferences;
@@ -18,14 +21,20 @@ import by.vanopiano.timetracker.util.MultiprocessPreferences.MultiprocessSharedP
 public class LocationCheckService extends Service
 {
     private LocationManager mLocationManager = null;
-    private static final int NETWORK_LOCATION_INTERVAL = 1000;
-    private static final int GPS_LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
+    private static final int NETWORK_LOCATION_INTERVAL = 1000,
+                             PASSIVE_LOCATION_INTERVAL = 1000,
+                             GPS_LOCATION_INTERVAL = 5000;
+
 
     private LocationListener[] mLocationListeners = new LocationListener[] {
             new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
+            new LocationListener(LocationManager.NETWORK_PROVIDER),
+            new LocationListener(LocationManager.PASSIVE_PROVIDER)
     };
+
+    private int holdMinutes = 0, stabilitySeconds = 0;
+    private boolean swipingNotificationHolding;
 
     private class LocationListener implements android.location.LocationListener{
         Location mLastLocation;
@@ -70,6 +79,16 @@ public class LocationCheckService extends Service
         }
     }
 
+    private void initializePassiveUpdates() {
+        try {
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.PASSIVE_PROVIDER, PASSIVE_LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    mLocationListeners[2]);
+        } catch (SecurityException | IllegalArgumentException ex) {
+            // Do nothing
+        }
+    }
+
     private void initializeGpsUpdates() {
         try {
             mLocationManager.requestLocationUpdates(
@@ -88,8 +107,12 @@ public class LocationCheckService extends Service
         initializeLocationManager();
         initializeNetworkUpdates();
 
-        if (sp.getBoolean("use_gps_new", false))
+
+        if (sp.getBoolean("use_gps_multi_process", false))
             initializeGpsUpdates();
+        holdMinutes = sp.getInt("later_minutes_multi_process", 0);
+        stabilitySeconds = sp.getInt("stability_seconds_multi_process", 0);
+        swipingNotificationHolding = sp.getBoolean("swiping_notification_holding_multi_process", false);
     }
 
     @Override
@@ -113,20 +136,37 @@ public class LocationCheckService extends Service
         }
     }
 
-    private void checkTasksForDistance(Location currentLocation) {
-        for (Task task : Task.getAll()) {
-            task.inDistance(currentLocation);
+    private void checkTasksForDistance(Location location) {
+        Location bestLocation = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(new Criteria(), false));
 
+        if (bestLocation != null)
+            location = bestLocation;
+        if (location == null)
+            return;
+
+        for (Task task : Task.getAll()) {
             if (task.latitude > 0 && task.longitude > 0 && task.locationResumeEnabled) {
-                if (task.inDistance(currentLocation)) {
+
+                if (task.timeApperedInLocation == 0) {
+                    task.setNotificationStartedMillis(System.currentTimeMillis());
+                    task.updateTimeApperedInLocation();
+                }
+
+                if (task.inDistance(location)) {
                     if (task.isPaused()) {
-                        Helpers.createNotification(getApplicationContext(), task, BaseTaskNotificationService.NOTIF_TASK_TYPE_RESUME);
+                        if (task.isStableLocation(stabilitySeconds) && task.isNotHolded(holdMinutes)) {
+                            task.clearTimeApperedInLocation();
+                            Helpers.createNotification(getApplicationContext(), task, BaseTaskNotificationService.NOTIF_TASK_TYPE_RESUME, swipingNotificationHolding);
+                        }
                     } else {
                         Helpers.closeNotification(getApplicationContext(), task.getId().intValue());
                     }
                 } else {
                     if (task.isRunning()) {
-                        Helpers.createNotification(getApplicationContext(), task, BaseTaskNotificationService.NOTIF_TASK_TYPE_PAUSE);
+                        if (task.isStableLocation(stabilitySeconds) && task.isNotHolded(holdMinutes)) {
+                            task.clearTimeApperedInLocation();
+                            Helpers.createNotification(getApplicationContext(), task, BaseTaskNotificationService.NOTIF_TASK_TYPE_PAUSE, swipingNotificationHolding);
+                        }
                     } else {
                         Helpers.closeNotification(getApplicationContext(), task.getId().intValue());
                     }
@@ -134,4 +174,5 @@ public class LocationCheckService extends Service
             }
         }
     }
+
 }

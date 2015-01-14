@@ -46,6 +46,7 @@ public class DetailActivity extends BaseActivity {
 
     private WorksRecyclerAdapter adapter;
     private RecyclerView recyclerView;
+    private View emptyRecyclerView;
 
     SharedPreferences sp;
 
@@ -94,6 +95,7 @@ public class DetailActivity extends BaseActivity {
         task = Task.load(Task.class, getIntent().getLongExtra(EXTRA_ID, 0));
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        emptyRecyclerView = findViewById(R.id.empty_recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -153,6 +155,7 @@ public class DetailActivity extends BaseActivity {
         updateTask();
         LoadButtons();
         updateDataOnViews();
+        checkEmptyView();
         startUpdatingView();
     }
 
@@ -201,6 +204,7 @@ public class DetailActivity extends BaseActivity {
                 t.pause();
             }
         }
+        EventBus.getDefault().post(new OnTaskStartedEvent(task.getId()));
         task.resume();
         LoadButtons();
         startUpdatingView();
@@ -211,6 +215,7 @@ public class DetailActivity extends BaseActivity {
         Work w = task.stop();
 
         adapter.notifyTaskAdded(w);
+        checkEmptyView();
 
         updateView();
         LoadButtons();
@@ -296,9 +301,14 @@ public class DetailActivity extends BaseActivity {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         adapter.removeItem(position);
+                        checkEmptyView();
                     }
                 })
                 .show();
+    }
+
+    private void checkEmptyView() {
+        emptyRecyclerView.setVisibility(adapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
     }
 
     public static void launch(BaseActivity activity, View transitionView, long taskId, int taskPosition) {

@@ -1,5 +1,4 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
     <CheckBoxPreference
         android:key="only_one_work_at_a_time"
         android:title="@string/pref_only_one_task_at_a_time"
@@ -14,4 +13,24 @@
         android:summaryOn="@string/pref_use_gps_on"
         android:defaultValue="false" />
 
+    <EditTextPreference
+        android:inputType="number"
+        android:key="stability_seconds"
+        android:title="@string/pref_stability_seconds"
+        android:defaultValue="30" />
+
+    <EditTextPreference
+        android:inputType="number"
+        android:key="later_minutes"
+        android:title="@string/pref_later_minutes"
+        android:defaultValue="5" />
+
+    <!--TODO: Remove visibility attribute -->
+    <CheckBoxPreference
+        android:visibility="gone"
+        android:key="swiping_notification_holding"
+        android:title="@string/pref_swiping_notification_holding"
+        android:summaryOff="@string/pref_swiping_notification_holding_off"
+        android:summaryOn="@string/pref_swiping_notification_holding_on"
+        android:defaultValue="false" />
 </PreferenceScreen>

@@ -47,4 +47,10 @@
     <string name="successfully_saved">Задача была успешно сохранена</string>
     <string name="doesnt_exist">не существует</string>
     <string name="task_edit">Редактирование задачи</string>
+    <string name="pref_later_minutes">Время откладывания задачи в уведомлении, в минутах.</string>
+    <string name="notif_later">Позже</string>
+    <string name="pref_stability_seconds">Время до определения местоположения, в секундах</string>
+    <string name="pref_swiping_notification_holding">Смахивание уведомления откладывает задачу.</string>
+    <string name="pref_swiping_notification_holding_off">Уведомление будет содержать  кнопку \'Позже\'</string>
+    <string name="pref_swiping_notification_holding_on">Задача может быть отложена смахиванием уведомления.</string>
 </resources>
