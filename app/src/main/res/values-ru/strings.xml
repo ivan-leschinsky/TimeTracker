@@ -53,4 +53,6 @@
     <string name="pref_swiping_notification_holding">Смахивание уведомления откладывает задачу.</string>
     <string name="pref_swiping_notification_holding_off">Уведомление будет содержать  кнопку \'Позже\'</string>
     <string name="pref_swiping_notification_holding_on">Задача может быть отложена смахиванием уведомления.</string>
+    <string name="here_will_be_work_history">Здесь будут ваши истории работ.</string>
+    <string name="here_will_be_your_tasks">Здесь будут ваши задачи.</string>
 </resources>

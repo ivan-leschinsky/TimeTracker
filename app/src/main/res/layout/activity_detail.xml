@@ -55,6 +55,6 @@
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="10dp"
-        android:text="Here will be your work history"
+        android:text="@string/here_will_be_work_history"
         android:padding="@dimen/spacing_large" />
 </RelativeLayout>

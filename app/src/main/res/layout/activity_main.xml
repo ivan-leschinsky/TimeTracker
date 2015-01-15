@@ -32,7 +32,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="25dp"
-            android:text="Here will be your tasks."
+            android:text="@string/here_will_be_your_tasks"
             android:padding="@dimen/spacing_large" />
 
         <com.melnykov.fab.FloatingActionButton

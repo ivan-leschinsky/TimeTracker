@@ -54,7 +54,7 @@
                 android:layout_weight="0"
                 android:layout_width="fill_parent"
                 android:gravity="center"
-                android:text="Here will be your work history"
+                android:text="@string/here_will_be_work_history"
                 android:padding="@dimen/spacing_large"
                 android:layout_height="fill_parent"
                 android:textSize="25dp"/>

@@ -25,9 +25,7 @@
         android:title="@string/pref_later_minutes"
         android:defaultValue="5" />
 
-    <!--TODO: Remove visibility attribute -->
     <CheckBoxPreference
-        android:visibility="gone"
         android:key="swiping_notification_holding"
         android:title="@string/pref_swiping_notification_holding"
         android:summaryOff="@string/pref_swiping_notification_holding_off"

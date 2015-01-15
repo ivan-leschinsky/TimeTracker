@@ -54,12 +54,12 @@ public class SettingsActivity extends PreferenceActivity {
 
         CheckBoxPreference useGpsPref = (CheckBoxPreference) getPreferenceManager().findPreference("use_gps");
         CheckBoxPreference swipingNotificationHoldingPref = (CheckBoxPreference) getPreferenceManager().findPreference("swiping_notification_holding");
+
+        //TODO: Temporary turn off this option
+        swipingNotificationHoldingPref.setEnabled(false);
+
         EditTextPreference holdingMinutes = (EditTextPreference) getPreferenceManager().findPreference("later_minutes");
         EditTextPreference stabilitySeconds = (EditTextPreference) getPreferenceManager().findPreference("stability_seconds");
-
-    //TODO: Remove
-//        holdingMinutes.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
-//        stabilitySeconds.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
 
         useGpsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object useGps) {

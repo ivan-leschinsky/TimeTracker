@@ -61,4 +61,7 @@
     <string name="pref_swiping_notification_holding">Swiping notification will hold the task</string>
     <string name="pref_swiping_notification_holding_off">Notification will contain \'Later\' button</string>
     <string name="pref_swiping_notification_holding_on">Task could be holded by swiping the notification.</string>
+
+    <string name="here_will_be_work_history">Here will be your work history.</string>
+    <string name="here_will_be_your_tasks">Here will be your tasks.</string>
 </resources>
